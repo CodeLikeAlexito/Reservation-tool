@@ -1,0 +1,134 @@
+﻿@model Reservations.ViewModels.Admin.QueriesVM
+@using GridMvc.Html
+
+@{
+    ViewBag.Title = "ReservationQueries";
+    Layout = "~/Views/_LayoutUsers.cshtml";
+}
+
+<script type="text/javascript">
+
+    function openQuery(evt, queryName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(queryName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+</script>
+
+<div>
+
+    <div class="tab">
+        <button class="tablinks" onclick="openQuery(event, 'Query1')">Обща информация</button>
+        <button class="tablinks" onclick="openQuery(event, 'Query2')">Статус стаи</button>
+        <button class="tablinks" onclick="openQuery(event, 'Query3')">Освобождаващи се стаи</button>
+    </div>
+
+    <div id="Query1" class="tabcontent">
+        @using (Html.BeginForm())
+        {
+            <div class="container text-center">
+                <br />
+                @* Filter section *@
+
+                @* Grid section *@
+                <h3>Обща информация</h3>
+                <br />
+            </div>
+
+            <div id="Query1Grid">
+                <div class="form-btn">
+                    <input class="btn btn-outline-info btn-sm text-right" name="button" type="submit" value="Обща информация - Excel" />
+                </div>
+
+
+                @Html.Grid(Model.QueriesDataQuery1).Columns(columns =>
+                {
+                    columns.Add(c => c.RsvnDateDescription).Titled("Дата резервация").Css("grid-center-align");
+                    columns.Add(c => c.RsvnMaker).Titled("Направил резервацията").Css("grid-center-align");
+                    columns.Add(c => c.PaymentDATEDescription).Titled("Дата на плащане").Css("grid-center-align");
+                    columns.Add(c => c.LastPaymentDATEDescription).Titled("Крайна дата за плащане").Css("grid-center-align");
+                    columns.Add(c => c.CancellationDATEDescription).Titled("Дата на анулиране на резервация").Css("grid-center-align");
+                    columns.Add(c => c.AccommodationDATEDescription).Titled("Дата настаняване").Css("grid-center-align");
+                    columns.Add(c => c.LeavingDATEDescription).Titled("Дата напускане").Css("grid-center-align");
+                    columns.Add(c => c.Nights).Titled("Брой нощувки").Css("grid-center-align");
+                    columns.Add(c => c.FirstName).Titled("Име").Css("grid-center-align");
+                    columns.Add(c => c.LastName).Titled("Презиме").Css("grid-center-align");
+                    columns.Add(c => c.FamilyName).Titled("Фамилия").Css("grid-center-align");
+                    columns.Add(c => c.PersonTypeDescription).Titled("Тип служител").Css("grid-center-align");
+                    columns.Add(c => c.PersonAgeDescription).Titled("Възраст").Css("grid-center-align");
+                    columns.Add(c => c.EGN).Titled("ЕГН").Css("grid-center-align");
+                    columns.Add(c => c.BirthDateDescription).Titled("Дата на раждане").Css("grid-center-align");
+                    columns.Add(c => c.RoomFloorDescription).Titled("Етаж").Css("grid-center-align");
+                    columns.Add(c => c.RoomID).Titled("Номер на стая").Css("grid-center-align");
+                    columns.Add(c => c.RoomTypeDescription).Titled("Вид стая").Css("grid-center-align");
+
+                }).Sortable(true).WithPaging(100)
+
+
+            </div>
+        }
+
+    </div>
+
+    <div id="Query2" class="tabcontent">
+        @using (Html.BeginForm())
+        {
+
+            <div class="container text-center">
+                <br />
+                <h3>Статус стаи</h3>
+                <br />
+            </div>
+
+            <div id="Query2Grid">
+                <div class="form-btn">
+                    <input class="btn btn-outline-info btn-sm text-right" name="button" type="submit" value="Статус стаи - Excel" />
+                </div>
+                @Html.Grid(Model.QueriesDataQuery2).Columns(columns =>
+                {
+
+                   columns.Add(c => c.BegDateDescription).Titled("Начална дата").Css("grid-center-align");
+                   columns.Add(c => c.EndDateDescription).Titled("Крайна дата").Css("grid-center-align");
+                   columns.Add(c => c.RoomViewDescription).Titled("Описание на стая").Css("grid-center-align");
+                   columns.Add(c => c.ReservedRoom).Titled("Резервирани стаи").Css("grid-center-align");
+                   columns.Add(c => c.FreeRoom).Titled("Свободни стаи").Css("grid-center-align");
+
+                }).WithPaging(100).Sortable(true)
+
+            </div>
+        }
+    </div>
+
+    <div id="Query3" class="tabcontent">
+        @using (Html.BeginForm())
+        {
+            <div class="container text-center">
+                <br />
+                <h3>Освобождаващи се стаи</h3>
+                <br />
+            </div>
+
+            <div id="Query3Grid" class="container-sm">
+                <div class="form-btn">
+                    <input class="btn btn-outline-info btn-sm text-right" name="button" type="submit" value="Освобождаващи се стаи - Excel" />
+                </div>
+                @Html.Grid(Model.QueriesDataQuery3).Columns(columns =>
+                {
+                   columns.Add(c => c.LeavingDateDescription).Titled("Дата на напускане").Css("grid-center-align");
+                   columns.Add(c => c.RoomID).Titled("Номер на стая").Css("grid-center-align");
+                }).WithPaging(100).Sortable(true)
+
+            </div>
+        }
+    </div>
+</div>
+

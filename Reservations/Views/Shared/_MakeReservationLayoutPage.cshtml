@@ -1,0 +1,545 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+
+    <title>Резервация</title>
+
+    <link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/menu.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/app-default.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/myGridMVC.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/calendar.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/calendar-win2k-cold-1.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/themes/base/jquery-ui.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/themes/base/jquery-ui.min.css")" rel="stylesheet" />
+    @*<link rel="shortcut icon" type="image/png" href="neg_favicon.png" />*@
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/bootstrap.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/themes/base/datepicker.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/style.css")" rel="stylesheet" />
+
+
+
+    <script src="@Url.Content("~/Scripts/jquery-3.4.1.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.12.1.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.12.1.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/gridmvc.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/menu.js")"></script>
+    <script src="@Url.Content("~/Scripts/calendar.js")"></script>
+    <script src="@Url.Content("~/Scripts/calendar-bg.js")"></script>
+    <script src="@Url.Content("~/Scripts/calendar-setup.js")"></script>
+    @*<script src="@Url.Content("~/Scripts/datepicker-bg.js")" type="text/javascript"></script>*@
+
+    <script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/moment.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/moment.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/moment-with-locales.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/moment-with-locales.min.js")" type="text/javascript"></script>
+
+    @*<script src="@Url.Content("~/Scripts/popper.js")" type="text/javascript"></script>
+        <script src="@Url.Content("~/Scripts/popper.min.js")" type="text/javascript"></script>*@
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js")" type="text/javascript"></script>
+    @*<script src="@Url.Content("~/Scripts/ckeditor/ckeditor.js")"></script>*@
+
+    @*<script src="~/Scripts/jquery-ui-1.12.1.js"></script>*@
+
+    <script type="text/javascript">
+
+        /* Global variables scope */
+
+        var _numberAdults = 0;
+        var _numberKids = 0;
+        const months = ["Яну", "Фев", "Мар", "Апр", "Май", "Юни",
+            "Юли", "Авг", "Сеп", "Окт", "Нов", "Дек"];
+
+        /* */
+
+        $.ajaxSetup({
+            cache: false
+        });
+
+        /*
+        $(document).ready(function () {
+            var period = $('#ReservationInfo_Period').val();
+            $('#dropDownList').val(period);
+        });
+        */
+
+        /*
+        $(document).ready(function () {
+            $('.guestview').hover(function () {
+                var index = $('.guestview').index(this);
+                //console.log(index);
+                $('#guestAge'.concat(index)).change(function () {
+                    var val = $('#guestAge'.concat(index)).val();
+                    //console.log(val);
+                    if (index == 0) {
+                        console.log('fsa');
+                    }
+                    if (val == "65") {
+                        _numberAdults++;
+                    }
+                    //console.log(_numberAdults);
+                    //console.log(_numberKids);
+                });
+            });
+
+        });
+        */
+
+        /*function calculate_age(dob) {
+            //console.log(dob);
+            //console.log(dob.Value);
+            //var date = new Date(Date.parse(dob));
+            //var date = moment()
+            //var _text = dob.text();
+            //console.log(_text);
+            //console.log(date);
+            var format = 'dd-M-yy';
+            var date = moment(dob, format, 'bg')
+                .locale('en')
+                .format('dd-M-yy');
+            //console.log(date);
+            var date1 = new Date(Date.parse(dob));
+            //console.log(date1);
+            var diff_ms = Date.now() - dob.getTime();
+            var age_dt = new Date(diff_ms);
+
+            return Math.abs(age_dt.getUTCFullYear() - 1970);
+        }*/
+
+        /*function getDateFromMonthYear(input) {
+            const parts = input.split(" ");
+            if (parts.length != 2) throw Error(`Expected 2 parts, got ${parts.length}: "${input}"`);
+            const [searchMonth, year] = parts;
+            const month = months.indexOf(searchMonth.toLowerCase());
+            if (month < 0) throw Error(`Unknown month: "${searchMonth}"`);
+            return new Date(year, month, 1);
+        }*/
+
+        /*function strToDate(dateStr) {
+            var dateTry = new Date(dateStr);
+
+            if (!dateTry.getTime()) {
+                throw new Exception("Bad Date! dateStr: " + dateStr);
+            }
+
+            var tz = dateStr.trim().match(/(Z)|([+-](\d{2})\:?(\d{2}))$/);
+
+            if (!tz) {
+                var newTzOffset = dateTry.getTimezoneOffset() / 60;
+                var newSignStr = (newTzOffset >= 0) ? '-' : '+';
+                var newTz = newSignStr + ('0' + Math.abs(newTzOffset)).slice(-2) + ':00';
+
+                dateStr = dateStr.trim() + newTz;
+                dateTry = new Date(dateStr);
+
+                if (!dateTry.getTime()) {
+                    throw new Exception("Bad Date! dateStr: " + dateStr);
+                }
+            }
+
+            return dateTry;
+        }*/
+
+        function getAge(date) {
+            var today = new Date();
+            var res = date.split("-");
+            var indexMonth = months.indexOf(res[1]);
+            var year = Number(res[2]);
+            var day = Number(res[0]);
+            var birthDate = new Date(year, indexMonth, day);//moment(date, "dd-M-yy").toDate();
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            return age;
+        }
+
+    $(document).ready(function () {
+        $('.birthdate').mouseover(function () {
+            var index = $(".birthdate").index(this);
+
+            $('#birthDateId'.concat(index)).change(function () {
+                var date = $('#birthDateId'.concat(index)).val();
+                var age = getAge(date);
+
+                if (age >= 18) {
+                    $('#guestAge'.concat(index)).val(65);
+                } else if (age <= 3) {
+                    $('#guestAge'.concat(index)).val(66);
+                } else {
+                    $('#guestAge'.concat(index)).val(75);
+                }
+            });
+        });
+    });
+
+
+    /* Ако лицето е пенсионер може да е само възрастен. Ако е служител или външен може да е и дете */
+    $(document).ready(function () {
+        $('.guesttype').hover(function () {
+            var index = $(".guesttype").index(this);
+            $('#guestType'.concat(index)).change(function () {
+                var guestType = $(this).val();
+                var guestView = $('#guestAge'.concat(index));
+                if (guestType == 80) {
+                    var tempValue = 65;
+                    var tempText = "Възрастен";
+                    var options = "<option value='default'>Изберете възраст</option>";
+                    options += "<option value='" + tempValue + "'>" + tempText + "</option>";
+                    $(guestView).html(options);
+                } else {
+                    guestView.empty();
+                    var options = "<option value='0'>Изберете възраст</option>";
+                    options += "<option value='65'>Възрастен</option>";
+                    options += "<option value='75'>Дете от 3 до 12 години</option>";
+                    options += "<option value='66'>Дете от 0 до 3 години</option>";
+                    $(guestView).html(options);
+                }
+            });
+        });
+    });
+
+    /* Спрямо избрания тип стая, зарежда се меню с избор за описание на стая */
+    $(document).ready(function () {
+        var url = '@Url.Action("FetchRoomView", "Reservation")'; // Controller method
+
+        $('.roomtype').hover(function () {
+            var index = $(".roomtype").index(this);
+            $('#roomTypeDropDownList'.concat(index)).change(function () {
+
+                var roomType = $(this).val();
+                //sessionStorage.setItem(this, roomType);
+                //alert(roomType);
+                var roomView = $("#roomViewDropDownList".concat(index)); // cache it
+                var options = "<option value='default'>Изберете изглед</option>";
+                $.getJSON(url, { roomType: roomType }, function (response) {
+                    roomView.empty(); // remove any existing options
+                    $.each(response, function (index, item) {
+                        options += "<option value='" + item.Value + "'>" + item.Text + "</option>";
+                    });
+                    $(roomView).html(options);
+                });
+            });
+        });
+    });
+
+    /* Спрямо избраните тип и описание на стая, зареждат се етажите в които съществува такава стая */
+    $(document).ready(function () {
+        var flag = 1;
+        var url = '@Url.Action("FetchRoomFloor", "Reservation")'; // Controller method
+        $('.roomview').mouseover(function () {
+            var index = $(".roomview").index(this);
+
+            if (index == 0 && flag == 1) {
+                flag = 0;
+                var roomView = $('#roomViewDropDownList'.concat(index)).val();
+                var roomType = $('#roomTypeDropDownList'.concat(index)).val();
+                var roomFloor = $('#roomLevelDropDownList'.concat(index));
+                var options = "<option value='default'>Изберете етаж</option>";
+                $.getJSON(url, { roomType: roomType, roomView: roomView }, function (response) {
+                    roomFloor.empty(); // remove any existing options
+                    $.each(response, function (index, item) {
+                        options += "<option value='" + item.Value + "'>" + item.Text + "</option>";
+                    });
+                    $(roomFloor).html(options);
+                });
+            }
+            else {
+                $('#roomViewDropDownList'.concat(index)).change(function () {
+                    var roomView = $(this).val();
+                    var roomType = $('#roomTypeDropDownList'.concat(index)).val();
+                    var roomFloor = $('#roomLevelDropDownList'.concat(index)); // cache it
+                    var options = "<option value='default'>Изберете етаж</option>";
+                    $.getJSON(url, { roomType: roomType, roomView: roomView }, function (response) {
+                        roomFloor.empty(); // remove any existing options
+                        $.each(response, function (index, item) {
+                            options += "<option value='" + item.Value + "'>" + item.Text + "</option>";
+                        });
+                        $(roomFloor).html(options);
+                    });
+                });
+            }
+        });
+    });
+
+    /* Спрямо въведетени тип, описание и етаж зареждат се номерата на стаите по зададените критерии */
+    $(document).ready(function () {
+        var url = '@Url.Action("FetchRoomID", "Reservation")'; // Controller method
+        $('.roomlevel').mouseover(function () {
+            var index = $(".roomlevel").index(this);
+            $('#roomLevelDropDownList'.concat(index)).change(function () {
+                //alert("Here");
+                var roomFloor = $(this).val();
+                var begDate = $('#BegDATE').val();
+                var endDate = $('#EndDATE').val();
+                var roomType = $('#roomTypeDropDownList'.concat(index)).val();
+                var roomView = $('#roomViewDropDownList'.concat(index)).val();
+                var roomID = $('#roomIdDropDownList'.concat(index));
+                var options = "<option value='default'>Изберете стая</option>";
+                $.getJSON(url, {
+                    begDate: begDate, endDate: endDate, roomType: roomType, roomView: roomView,
+                    roomFloor: roomFloor
+                }, function (response) {
+                    //alert("fsafa");
+                    roomID.empty(); // remove any existing options
+                    $.each(response, function (index, item) {
+                        options += "<option value='" + item.Value + "'>" + item.Text + "</option>";
+                    });
+                    $(roomID).html(options);
+                });
+            });
+        });
+    });
+
+    /* Това в момента не се използва но нека да остане за всеки сличай
+    $(document).ready(function () {
+        $('.roomid').hover(function () {
+            var index = $('.roomid').index(this);
+            var roomIdDL = '#roomIdDropDownList'.concat(index);
+            $(roomIdDL).change(function () {
+                var temp = $(roomIdDL).val();
+                elementCollection.push(temp);
+            });
+        });
+    });*/
+
+    /* Зареждат се избраните номера на стаи */
+    $(document).ready(function () {
+        $('.guestroomid').focus(function () {
+            var index = $('.guestroomid').index(this);
+            var guestRoomId = $('#guestRoomId'.concat(index));
+            $(guestRoomId).empty();
+            $(guestRoomId).append($('<option>Изберете стая в която ще гостувате</option>'));
+            var numDropDownLists = $("[id^=roomViewDropDownList]").length;
+            var count;
+            var dropDownListValues = new Array();
+            for (count = 0; count < numDropDownLists; count++) {
+                dropDownListValues[count] = $('#roomIdDropDownList'.concat(count)).val();
+
+            }
+
+            if (count === 0) {
+                console.log('count === 0');
+            } else {
+                $.each(dropDownListValues, function (i, p) {
+                    $(guestRoomId).append($('<option></option>').val(p).html(p));
+                });
+            }
+
+        });
+    });
+
+    /* datepicker without years */
+        $(document).ready(function () {
+        $('.datepicker').datepicker({
+            dateFormat: "dd-M-yy"
+        });
+    });
+
+    /* datepicker with year */
+        $(document).ready(function () {
+
+        $('.birthdate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: '-100:+0',
+            dateFormat: "dd-M-yy",
+            onClose: function () {
+                //console.log('hereeeeee');
+                $("#rsvnForm").validate().element(".birthdate");
+            }
+        });
+        });
+
+
+
+    /* jQuery message box. It only shows when back-end validation for room is TRUE */
+    function showMessageBoxTrue() {
+
+        $('#messageBox').dialog({
+
+            title: "Резервация",
+            draggable: true,
+            resizable: false,
+            height: "auto",
+            width: 500,
+            modal: true,
+
+            show: {
+                effect: "blind",
+                duration: 1000
+            },
+            hide: {
+                effect: "explode",
+                duration: 1000
+            },
+
+            buttons: [
+                {
+                    text: "Да",
+                    icon: "ui-icon-heart",
+                    click: function () {
+                        $(this).dialog("close");
+                        $('#rsvnForm').submit();
+                        console.log('submited');
+
+                    }
+                },
+                {
+                    text: "Не",
+                    icon: "ui-icon-heart",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+        });
+    }
+
+    /* jQuery message box.It only shows when back - end validation for room is FALSE */
+    function showMessageBoxFalse() {
+
+        $('#validationFalse').dialog({
+
+            title: "Резервация",
+            draggable: true,
+            resizable: true,
+            height: "auto",
+            width: 500,
+            modal: true,
+
+            show: {
+                effect: "blind",
+                duration: 1000
+            },
+            hide: {
+                effect: "explode",
+                duration: 1000
+            },
+
+            buttons: [
+                {
+                    text: "Затвори",
+                    icon: "ui-icon-heart",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+
+        });
+    }
+
+    /* jQuery message box. If rooms are not selected validation is FALSE */
+        function showMessageBoxRoomsEmpty() {
+
+            $('#roomsNotSelected').dialog({
+
+                title: "Резервация",
+                draggable: true,
+                resizable: true,
+                height: "auto",
+                width: 500,
+                modal: true,
+
+                show: {
+                    effect: "blind",
+                    duration: 1000
+                },
+                hide: {
+                    effect: "explode",
+                    duration: 1000
+                },
+
+                buttons: [
+                    {
+                        text: "Затвори",
+                        icon: "ui-icon-heart",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+
+            });
+        }
+
+    /* Passing selected Room IDs and dates to server for db validation check if they are free and getting response */
+    $(document).ready(function () {
+        var url = '@Url.Action("CheckIfRoomIsFree", "Reservation")'; // Controller method
+        $('#submitRsvn').click(function () {
+            var begDate = $('#BegDATE').val();
+            var endDate = $('#EndDATE').val();
+            var numDropDownLists = $("[id^=roomViewDropDownList]").length;
+            var count;
+            var dropDownListValues = new Array();
+            for (count = 0; count < numDropDownLists; count++) {
+                dropDownListValues[count] = $('#roomIdDropDownList'.concat(count)).val();
+            }
+
+            if (count === 0) {
+                console.log("No rooms are selected. Array is empty");
+            }
+            else {
+                $.each(dropDownListValues, function (i, p) {
+                    $.getJSON(url, { roomId: p, begDate: begDate, endDate: endDate }, function (response) {
+                        //console.log(dropDownListValues[i]);
+                        if (dropDownListValues[i] === '') {
+                            //console.log('fsa');
+                            showMessageBoxRoomsEmpty();
+                        } else {
+                            var roomsChecked = [];
+                            roomsChecked.push(response);
+                            console.info(roomsChecked);
+                            if (i + 1 === numDropDownLists) {
+                                if (roomsChecked.every(Boolean)) {
+                                    console.log('Rooms are free');
+                                    showMessageBoxTrue();
+                                } else {
+                                    showMessageBoxFalse();
+                                }
+                            } else {
+                                console.log('Inside else statement');
+                            }
+                        }
+
+
+
+                    });
+                });
+            }
+        });
+    });
+
+    </script>
+
+
+</head>
+<body>
+    @Html.Partial("GenerateMenu")
+
+    <div class="container p-3 my-3 text-dark text-center">
+        <h3>РЕЗЕРВАЦИОННА ФОРМА</h3>
+        <h6>Почивна база Созопол - Уникредит Булбанк</h6>
+        <img src="~/Images/ucb.logo.jpg" />
+    </div>
+
+    <div>
+        @RenderBody()
+    </div>
+
+</body>
+</html>

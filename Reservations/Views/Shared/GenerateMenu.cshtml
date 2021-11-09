@@ -1,0 +1,91 @@
+﻿
+
+@using UCB.SecurityManager;
+@{
+    MenuAccess menu = ((Reservations.Classes.Utils.UserInfo)(Session["UserInfo"])).accessManager.GetUserMenuAccess();
+
+    // if (menu == null || menu.Menu == null || menu.Menu.Length == 0)
+    //    return null;
+
+    MenusTypeMainMenuSubMenu[] subMenus = null;
+
+    bool foundSubMenu = false;
+
+    foreach (MenusTypeMainMenu mainMenu in menu.Menu)
+    {
+        if (mainMenu.SubMenu != null)
+        {
+            foreach (MenusTypeMainMenuSubMenu subMenu in mainMenu.SubMenu)
+            {
+                if (Request.Path.ToUpper().Contains(subMenu.URL.ToUpper()))
+                {
+                    foundSubMenu = true;
+                }
+            }
+        }
+
+        if (foundSubMenu)
+        {
+            subMenus = mainMenu.SubMenu;
+            break;
+        }
+    }
+}
+
+<nav class="navbar navbar-expand-sm navbar-dark navbar-default sticky-top navbar-fixed-top">
+    <a class="navbar-brand" href="#">
+        <img src="~/Images/logo.jpg" alt="no image"/>
+    </a>
+    <button type="button" class="navbar-toggler"  data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="top-menu" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+            @foreach (MenusTypeMainMenu mainMenu in menu.Menu)
+            {
+
+                <li>
+                    <a class="nav-link" href="@Url.Content("~/" + mainMenu.URL)">@mainMenu.Title</a>
+                </li>
+            }
+        </ul>
+    </div>
+</nav>
+
+
+
+
+@if (subMenus != null)
+{
+    <div></div>
+    <div id="sse50">
+        <div id="sses50" style="float: left">
+            <ul>
+
+                @foreach (MenusTypeMainMenuSubMenu subMenu in subMenus)
+                {
+                    if (subMenu.URL.StartsWith("http"))
+                    {
+                        <li>
+                            <a target="_blank" href="@subMenu.URL">@subMenu.Title</a>
+                        </li>
+
+                    }
+                    else
+                    {
+                        <li>
+                            <a href="@Url.Content("~/" + subMenu.URL)">@subMenu.Title</a>
+                        </li>
+                    }
+                }
+
+                <li><a class="end">&nbsp;</a></li>
+            </ul>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+
+}
+
+
+

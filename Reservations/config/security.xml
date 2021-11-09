@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Security>
+  <Role Name="POWER_USER" Description="Administrator">
+<ADUser Name="bb049915" Access="ACCEPT" Description="" />
+<ADUser Name="bb026341" Access="ACCEPT" Description="" />
+<ADUser Name="bb038358" Access="ACCEPT" Description="" />
+<ADUser Name="bb041042 " Access="ACCEPT" Description="" />
+  </Role>
+  <Role Name="HELP_DESK" Description="ХелпДеск">
+  <ADUser Name="bb049915" Access="ACCEPT" Description="" />
+  </Role>   
+    
+  <Role Name="REGULAR_USER" Description="Потребител">
+    <ADUser Name="bb049915" Access="ACCEPT" Description="" />
+	<ADUser Name="bb047235" Access="ACCEPT" Description="" />
+	
+	<ADUser Name="bb049203 " Access="ACCEPT" Description="" />
+   
+   
+  </Role>
+   
+  <ADConnection>
+    <Server>LDAP://UCB.LAN</Server>
+    <Username>CashReports</Username>
+    <Passowrd>Parola07</Passowrd>
+  </ADConnection>
+</Security>

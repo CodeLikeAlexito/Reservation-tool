@@ -1,0 +1,177 @@
+﻿@model Reservations.ViewModels.Reservation.ReservationVM
+@using GridMvc.Html
+@{
+    ViewBag.Title = "ListReservations";
+    Layout = "~/Views/Shared/_AdminLayoutPage.cshtml";
+    Reservations.Classes.Utils.UserInfo userInfo = ((Reservations.Classes.Utils.UserInfo)Session["UserInfo"]);
+}
+
+<script src="~/Scripts/datepicker-bg.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('.datepicker').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: '-100:+0',
+            dateFormat: "dd-M-yy"
+        });
+
+    });
+
+    $(document).ready(function () {
+        $('#clearFormBtn11').click(function () {
+            console.log('Clear btn clicked');
+            //$('#adminFilterForm').trigger('reset');
+            //$('clearFormBtn')[0].reset();
+            document.getElementById("adminFilterForm").reset();
+        });
+    });
+
+    function customReset() {
+        document.getElementById("accdatefrom").value = "";
+        document.getElementById("accdateto").value = "";
+        document.getElementById("leavedatefrom").value = "";
+        document.getElementById("leavedateto").value = "";
+        document.getElementById("maker").value = "";
+        document.getElementById("res_id").value = "";
+        document.getElementById("status").value = "Статус";
+    }
+
+</script>
+
+<style>
+    div.ui-datepicker {
+        font-size: 80.5%;
+    }
+</style>
+
+
+
+@using (Html.BeginForm(null, null, new { @id = string.Empty }, FormMethod.Post, new { @id = "adminFilterForm" }))
+{
+<div>    
+<div>
+    
+    
+    <br />
+    <br />
+    <div class="container border">
+        <br />
+        @*
+        <div id="instruction">
+            <p class="text-danger">ИНСТРУКЦИЯ ЗА ИЗПОЛЗВАНЕ НА ФИЛТЪР</p>
+            <p></p>
+            <ol>
+                <li></li>
+            </ol>
+        </div>*@
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => Model.FilterAdmin.AccomodationDateFrom, "{0:dd-MM-yyyy}", new { @id = "accdatefrom", @class = "form-control-sm datepicker", @placeholder = "Дата настаняване от" })
+                    @Html.ValidationMessageFor(model => model.FilterAdmin.AccomodationDateFrom, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => Model.FilterAdmin.AccomodationDateTo, "{0:dd-MM-yyyy}", new { @id = "accdateto", @class = "form-control-sm datepicker", @placeholder = "Дата настаняване до" })
+                    @Html.ValidationMessageFor(model => model.FilterAdmin.AccomodationDateTo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => Model.FilterAdmin.LeaveDateFrom, "{0:dd-MM-yyyy}", new { @id = "leavedatefrom", @class = "form-control-sm datepicker", @placeholder = "Дата напускане от" })
+                    @Html.ValidationMessageFor(model => model.FilterAdmin.LeaveDateFrom, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    @Html.TextBoxFor(model => Model.FilterAdmin.LeaveDateTo, "{0:dd-MM-yyyy}", new { @id = "leavedateto", @class = "form-control-sm datepicker", @placeholder = "Дата напускане до" })
+                    @Html.ValidationMessageFor(model => model.FilterAdmin.LeaveDateTo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    @Html.EditorFor(model => model.FilterAdmin.ReservationMaker, new { htmlAttributes = new { @id = "maker", @class = "form-control-sm", @placeholder = "Направил резервация" } })
+                    @Html.ValidationMessageFor(model => model.FilterAdmin.ReservationMaker, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    @Html.EditorFor(model => model.FilterAdmin.ReservationID, new { htmlAttributes = new { @id = "res_id", @class = "form-control-sm", @placeholder = "Номер на резервация" } })
+                    @Html.ValidationMessageFor(model => model.FilterAdmin.ReservationID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    @Html.EnumDropDownListFor(m => m.FilterAdmin.StatusRsvn, "Статус", new { @id = "status", @class = "form-control-sm" })
+                    @Html.ValidationMessageFor(model => model.FilterAdmin.StatusRsvn, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-sm-3">
+                @*
+                <div class="form-group">
+                    <input class="submit-btn btn btn-info btn-sm" name="button" type="submit" value="Търси" />
+                </div>*@
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-2"></div>
+            <div class="col-lg-2">
+                <div class="btn-group btn-group-md" role="group" aria-label="Basic example">
+                    <input class="submit-btn btn btn-info btn-sm" name="button" type="submit" value="Търси" />
+                    <input class="submit-btn btn btn-info btn-sm" id="clearFormBtn" type="button" name="reset" value="Изчисти" onclick="customReset()" />
+                </div>
+            </div>
+            <div class="col-lg-2"></div>
+            <div class="col-lg-3"></div>
+        </div>
+        <br />
+
+    </div>
+    <br />    
+
+    </div>
+
+
+    <div>
+        @Html.Grid(Model.ReservationQuery).Columns(columns =>
+   {
+       columns.Add().Encoded(false).Sanitized(false).SetWidth(30).RenderValueAs
+                                                             (
+                                                                 c => @Html.ActionLink("Детайли", "ReservationDetails", "Admin", new { id = c.ReservationID }, new { @class = "btn btn-outline-danger" })
+                                                             );
+       columns.Add(c => c.RsvnDATEDescription).Titled("Дата резервация").Format("{0:dd.MM.yyyy HH:mm}").Css("grid-center-align");
+       columns.Add(c => c.AccommodationDATEDescription).Titled("Дата настаняване");
+       columns.Add(c => c.LeavingDATEDescription).Titled("Дата напускане");
+       columns.Add(c => c.Nights).Titled("Брой нощувки").Css("grid-center-align");
+       columns.Add(c => c.TotalPrice).Titled("Цена").Css("grid-center-align");
+       columns.Add(c => c.RsvnStatusDescription).Titled("Статус на резервация").Css("grid-center-align");
+       columns.Add(c => c.RsvnMaker).Titled("Направил резервация").Css("grid-center-align");
+
+   }).WithPaging(100).Sortable(true)
+    </div>
+
+</div>
+}

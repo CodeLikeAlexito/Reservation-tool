@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2007 (http://www.altova.com) by BB033323 (EMBRACE) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Security">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Role" type="RoleType" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="ADConnection" type="ConnectionType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="RoleType">
+		<xs:sequence>
+			<xs:element name="ADGroup" type="MemberType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="ADUser" type="MemberType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Name" type="xs:string" use="required"/>
+		<xs:attribute name="Description" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="MemberType">
+		<xs:attribute name="Name" type="xs:string" use="required"/>
+		<xs:attribute name="Access" type="xs:string" use="required"/>
+		<xs:attribute name="Description" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="ConnectionType">
+		<xs:all>
+			<xs:element name="Server" type="xs:string"/>
+			<xs:element name="Username" type="xs:string"/>
+			<xs:element name="Passowrd" type="xs:string"/>
+		</xs:all>
+	</xs:complexType>
+</xs:schema>

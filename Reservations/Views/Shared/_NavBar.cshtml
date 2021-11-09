@@ -1,0 +1,40 @@
+﻿@{ 
+    Reservations.Classes.Utils.UserInfo userInfo = ((Reservations.Classes.Utils.UserInfo)Session["UserInfo"]);
+}
+
+<link href="~/Content/Site.css" rel="stylesheet" />
+
+<nav class="navbar navbar-expand-md navbar-dark navbar-default sticky-top navbar-fixed-top">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="top-menu" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <img src="~/Images/ucb.logo.jpg" />
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">ЗА СОЗПОЛ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="location.href='@Url.Action("Index", "Reservation")'">РЕЗЕРВАЦИЯ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="location.href='@Url.Action("Prices", "Prices")'">ЦЕНИ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">КОНТАКТ</a>
+            </li>
+            <li class="nav-item">
+
+                @if (userInfo.Role.Equals(Reservations.Classes.Utils.UserRole.POWER_USER))
+                {
+                    <a class="nav-link" href="#">АДМИН ПАНЕЛ</a>
+                }
+
+
+            </li>
+        </ul>
+    </div>
+    <br />
+</nav>

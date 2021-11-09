@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<MenuAccess>
+  <Menu>   
+    <MainMenu URL="Home/Index" Title="Начало" Description="" />
+	
+    <MainMenu URL="Reservation/Index" Title="Резервация" Description="" />
+	<MainMenu URL="Prices/Prices" Title="Цени" Description="" />
+    <MainMenu URL="Admin/ListReservations" Title="Управление на резервации" Description="" />
+    <MainMenu URL="Admin/ReservationQueries" Title="Справки" Description="" />
+  </Menu>
+  <Access>
+
+    <Page URL="Home/Index">
+      <Role>POWER_USER</Role>
+      <Role>REGULAR_USER</Role>
+      <Role>HELPDESK</Role>
+    </Page>
+    <Page URL="Reservation/Index">
+      <Role>POWER_USER</Role>
+      <Role>REGULAR_USER</Role>
+      <Role>HELPDESK</Role>
+    </Page>
+	<Page URL="Prices/Prices">
+      <Role>POWER_USER</Role>
+      <Role>REGULAR_USER</Role>
+      <Role>HELPDESK</Role>
+    </Page>
+    <Page URL="Admin/ListReservations">
+      <Role>POWER_USER</Role>
+    </Page>
+    <Page URL="Admin/ReservationQueries"> 
+      <Role>POWER_USER</Role>
+    </Page>
+  </Access>
+</MenuAccess>

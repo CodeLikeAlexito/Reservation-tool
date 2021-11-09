@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewBag.Title = "IEException";
+}
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<link href="~/Content/bootstrap.css" rel="stylesheet" />
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+
+<script type="text/javascript">
+    function openInGoogleChrome() {
+        var shell = new ActiveXObject("WScript.Shell");
+        shell.run("Chrome https://intappdev.ucb.lan/reservations");
+    }
+
+</script>
+
+
+<br />
+<div class="container text-center">
+    <img src="~/Images/ucb.logo.jpg" />
+</div>
+
+<br />
+<div class="container border text-center">
+    <br />
+    <h6>За по качествена работа и удоволствие, моля използвайте Microsoft Edge или Google Chrome</h6>
+    <p>Ако все пак имате желание да останете с Internet Explorer, няма проблеми! Избора е ваш.</p>
+
+</div>
+<br />
+<div class="container text-center">
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a href="microsoft-edge:https://intappdev.ucb.lan/reservations" type="button" class="submit-btn btn btn-outline-success btn-lg">Microsoft Edge</a>
+        <input class="submit-btn btn btn-outline-danger btn-lg" name="button" type="button" value="Google Chrome" onclick="openInGoogleChrome()" />
+        <input id="runOnIE" class="submit-btn btn btn-outline-primary btn-lg" name="button" type="button" value="Internet Explorer" onclick="window.location.href = '@Url.Action("Index", "Home", Request.Url.Scheme)'" />
+    </div>
+</div>

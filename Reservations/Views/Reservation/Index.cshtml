@@ -1,0 +1,174 @@
+﻿@model Reservations.ViewModels.Reservation.ReservationVM
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/_LayoutUsers.cshtml";
+}
+
+<script src="~/Scripts/datepicker-bg.js"></script>
+
+<script type="text/javascript">
+
+    /* JS Function to return date */
+    function ToJavaScriptDate(val) {
+        val = new Date(parseInt(val.substr(6)));
+        //const months = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const months = ["Яну", "Фев", "Мар", "Апр", "Май", "Юни", "Юли", "Авг", "Сеп", "Окт", "Нов", "Дек"];
+
+        return val.getDate() + "-" + months[val.getMonth()] + "-" + val.getFullYear();
+    }
+
+    /* Passing selected period and getting beg and end date for the period */
+    $(function () {
+        $('#dropDownList').change(function () {
+            var value = $(this).val();
+
+            if (value != null) {
+                $.post("@Url.Action("GetBegEndDates", "Reservation")?value=" + value, function (res) {
+
+                    if (res.Success === "true") {
+
+                        var BegDATE = ToJavaScriptDate(res.Data.BegDATE);
+                        var EndDATE = ToJavaScriptDate(res.Data.EndDATE);
+                        $('#BegDATE').val(BegDATE);
+                        $('#BegDATE').attr('readonly', true);
+                        $('#EndDATE').val(EndDATE);
+                        $('#EndDATE').attr('readonly', true);
+
+                    } else {
+                        console.log("Result from get dates from period is false. Check Index view js code");
+                    }
+
+                });
+            } else {
+                console.log("Error! Index view. No response for getting dates from period.");
+            }
+
+        });
+    });
+
+    /* If period is selected, we cannot change the dates */
+    $(document).ready(function () { 
+        $('#dropDownList').change(function () {
+                $('#BegDATE').datepicker("destroy");
+                $('#EndDATE').datepicker("destroy");
+                $(".mydate").off('click');
+            });
+    });
+
+    /* If dates are selected, cannot change period */
+    $(document).ready(function () {
+        $('.mydate').click(function () {
+            document.getElementById("dropDownList").disabled = true;
+        });
+    });
+
+    /* jQuery DatePicker */
+    $(document).ready(function () {
+        var minDate = new Date();
+        $('#BegDATE').datepicker({
+            showAnim: 'drop',
+            numberOfMonth: 1,
+            minDate: minDate,
+            dateFormat: "dd-M-yy",
+            onClose: function (selectedDate) {
+                $('#EndDATE').datepicker("option", "minDate", selectedDate);
+            }
+        });
+
+        $('#EndDATE').datepicker({
+            showAnim: 'drop',
+            numberOfMonth: 1,
+            minDate: minDate,
+            dateFormat: "dd-M-yy",
+            onClose: function (selectedDate) {
+                $('#EndDATE').datepicker("option", "minDate", selectedDate);
+            }
+        });
+
+    });
+
+</script>
+
+<div id="booking" class="section">
+    <div class="section-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 col-md-push-5">
+                    <div class="booking-cta">
+                        <h1>Добре дошли в почивната станция на Булбанк</h1>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-md-pull-7">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger small" })
+                    <div class="booking-form">
+                        @using (Html.BeginForm())
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="form-group">
+                                <span class="form_label">Място</span>
+                                <input class="form-control" type="text" placeholder="Почивна база на Уникредит - Созопол" readonly />
+                            </div>
+
+                            <div class="form-group">
+                                <span class="form_label">Смяна</span>
+                                @Html.DropDownListFor(m => m.ReservationInfo.Period, Model.ReservationInfo.PeriodList, "Изберете смяна", new { @class = "form-control", @id = "dropDownList" })
+                                @Html.ValidationMessageFor(m => m.ReservationInfo.Period, "", new { @class = "text-danger small" })
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <span class="from-label">Дата от</span>
+                                    @Html.TextBoxFor(model => Model.ReservationInfo.BegDATE, "{0:dd-MM-yyyy}", new { @id = "BegDATE", @class = "form-control datepicker mydate", @readonly = true, @placeholder = "Начална дата" })
+                                    @*@Html.EditorFor(model => Model.ReservationInfo.BegDATE, new { htmlAttributes = new { @id = "BegDATE", @class = "form-control datepicker mydate", @placeholder = "Начална дата", @readonly = true } })*@
+                                    @Html.ValidationMessageFor(model => model.ReservationInfo.BegDATE, "", new { @class = "text-danger small" })
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <span class="from-label">Дата до</span>
+                                        @Html.TextBoxFor(model => Model.ReservationInfo.EndDATE, "{0:dd-MM-yyyy}", new { @id = "EndDATE", @class = "form-control datepicker mydate", @readonly = true, @placeholder = "Крайна дата" })
+                                        @Html.ValidationMessageFor(model => model.ReservationInfo.EndDATE, "", new { @class = "text-danger small" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <span class="form_label">Възрастни</span>
+                                        @Html.EditorFor(model => model.ReservationInfo.Adults, new { htmlAttributes = new { @class = "form-control", min = 0, @placeholder = "0" } })
+                                        @Html.ValidationMessageFor(model => model.ReservationInfo.Adults, "", new { @class = "text-danger small" })
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <span class="form_label">Деца</span>
+                                        @Html.EditorFor(model => model.ReservationInfo.Kids, new { htmlAttributes = new { @class = "form-control", min = 0, @placeholder = "0" } })
+                                        @Html.ValidationMessageFor(model => model.ReservationInfo.Kids, "", new { @class = "text-danger small" })
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <span class="form_label">Брой стаи</span>
+                                        @Html.EditorFor(model => model.ReservationInfo.Rooms, new { htmlAttributes = new { @class = "form-control", min = 1, @placeholder = "0" } })
+                                        @Html.ValidationMessageFor(model => model.ReservationInfo.Rooms, "", new { @class = "text-danger small" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-btn">
+                                <input class="submit-btn btn btn-success" name="button" type="submit" value="Търси" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

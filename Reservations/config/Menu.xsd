@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2007 (http://www.altova.com) by BB033323 (EMBRACE) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="MenuAccess">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Menu" type="MenusType" minOccurs="0"/>
+				<xs:element name="Access" type="AccessType" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="MenusType">
+		<xs:sequence>
+			<xs:element name="MainMenu" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="MenuType">
+							<xs:sequence>
+								<xs:element name="SubMenu" minOccurs="0" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:complexContent>
+											<xs:extension base="MenuType">
+												<xs:sequence>
+													<xs:element name="SubMenu2" type="MenuType" minOccurs="0" maxOccurs="unbounded"/>
+												</xs:sequence>
+											</xs:extension>
+										</xs:complexContent>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MenuType">
+		<xs:attribute name="URL" type="xs:string" use="required"/>
+		<xs:attribute name="Title" type="xs:string"/>
+		<xs:attribute name="Description" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="AccessType">
+		<xs:sequence>
+			<xs:element name="Page" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="PageType">
+							<xs:sequence>
+								<xs:element name="Role" type="xs:string" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PageType">
+		<xs:attribute name="URL" type="xs:string" use="required"/>
+		<xs:attribute name="Description" type="xs:string"/>
+	</xs:complexType>
+</xs:schema>

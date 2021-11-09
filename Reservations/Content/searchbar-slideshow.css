@@ -1,0 +1,18 @@
+﻿img{
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}
+
+.box{
+    width: auto;
+}
+
+.box.large{
+    height:300px;
+}
+
+.box.small{
+    height: 100px;
+}
+

@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Reservations.Models.PricesTableModel>
+
+@using GridMvc.Html
+
+@{
+    Layout = "~/Views/_LayoutUsers.cshtml";
+    ViewBag.Title = "Prices";
+    Reservations.Classes.Utils.UserInfo userInfo = ((Reservations.Classes.Utils.UserInfo)Session["UserInfo"]);
+
+}
+
+<br />
+
+<div class="container text-center border">
+    <br />
+    <p><b>За тип гост "Дете", има се предив на дете от 3 до 12 годишна възраст.</b></p>
+    <p><b>За децата от 0 до 3 годишна възраст, заплаща се само такса от 0,44лв. за една нощувка.</b></p>
+    <br />
+</div>
+
+<br />
+<div class="container">
+    @Html.Grid(Model).Columns(columns =>
+{
+    if (userInfo.Role == Reservations.Classes.Utils.UserRole.POWER_USER)
+    {
+        columns.Add().Encoded(false).Sanitized(false).SetWidth(30).RenderValueAs
+                                                     (
+                                                         c => @Html.ActionLink("Корекция", "EditPrices", "Prices", new { id = c.ID }, new { @class = "btn btn-outline-danger" })
+                                                     );
+    }
+
+    columns.Add(c => c.RoomViewDescription).Titled("Описание на стая").Css("grid-center-align");
+    columns.Add(c => c.PersonTypeDescription).Titled("Тип гост");
+    columns.Add(c => c.PriceDescription).Titled("Цена");
+    columns.Add(c => c.TaxDescription).Titled("Такса").Css("grid-center-align");
+    columns.Add(c => c.TotalDescription).Titled("Общо").Css("grid-center-align");
+    columns.Add(c => c.SeasonDescription).Titled("Сезон").Css("grid-center-align");
+    columns.Add(c => c.UCBDescription).Titled("Служител").Css("grid-center-align");
+
+}).WithPaging(100).Sortable(true)
+</div>
+<br />

@@ -1,0 +1,188 @@
+﻿@model Reservations.ViewModels.Reservation.ReservationVM
+@using GridMvc.Html
+
+@{
+    ViewBag.Title = "ReservatuionDetails";
+    Layout = "~/Views/_SearchResultLayoutPage.cshtml";
+}
+
+<script src="~/Scripts/datepicker-bg.js"></script>
+
+<script type="text/javascript">
+
+    /* Makeing JS Date */
+    function ToJavaScriptDate(val) {
+        val = new Date(parseInt(val.substr(6)));
+        const months = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        return val.getDate() + "-" + months[val.getMonth()] + "-" + val.getFullYear();
+    }
+
+    /* Getting Beg and End date for Period from DB */
+    $(function () {
+        $('#periodDropList').change(function () {
+            var value = $(this).val();
+
+            if (value != null) {
+                $.post("@Url.Action("GetBegEndDates", "Reservation")?value=" + value, function (res) {
+
+                    if (res.Success === "true") {
+
+                        var BegDATE = ToJavaScriptDate(res.Data.BegDATE);
+                        var EndDATE = ToJavaScriptDate(res.Data.EndDATE);
+                        $('#BegDATE').val(BegDATE);
+                        $('#BegDATE').attr('readonly', true);
+                        $('#EndDATE').val(EndDATE);
+                        $('#EndDATE').attr('readonly', true);
+
+                    } else {
+                        $('#BegDATE').val(null);
+                        $('#BegDATE').attr('readonly', false);
+                        $('#EndDATE').val(null);
+                        $('#EndDATE').attr('readonly', false);
+                    }
+
+                });
+            } else {
+                console.log("Error in jQuery GetBegEndDates...");
+            }
+
+        });
+    });
+
+    /* If period is selected, we cannot change the dates */
+    $(document).ready(function () {
+        $('#periodDropList').change(function () {
+            $('#BegDATE').datepicker("destroy");
+            $('#EndDATE').datepicker("destroy");
+            $(".mydate").off('click');
+        });
+    });
+
+    /* If dates are selected, cannot change period */
+    $(document).ready(function () {
+        $('.mydate').change(function () {
+            var periodDropDown = $('#periodDropList');
+            var options = "<option value='default'>Изберете период (изключено)</option>";
+            $(periodDropDown).html(options);
+            document.getElementById("periodDropList").disabled = true;
+        });
+    });
+
+    /* Datepicker */
+    $(document).ready(function () {
+        $('.datepicker').datepicker({
+            dateFormat: "dd-M-yy"
+        });
+    });
+
+    /* Inserting selected period val in period drop down list */
+    $(document).ready(function () {
+        var period = $('#PeriodID').val();
+        $('#periodDropList').val(period);
+    });
+
+</script>
+
+
+@using (Html.BeginForm())
+{
+    <br />
+    <div class="container border">
+        <br />
+        <div class="booking-form">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="row no-margin">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <span class="form-label">Смяна</span>
+                        @Html.Hidden("PeriodValue", Model.ReservationInfo.Period, new { @id = "PeriodID" })
+                        @Html.DropDownListFor(m => m.ReservationInfo.Period, Model.ReservationInfo.PeriodList, "Смяна", new { @class = "form-control", @id = "periodDropList" })
+                        @Html.ValidationMessageFor(m => m.ReservationInfo.Period, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <span class="form-label">Дата от</span>
+
+                        @Html.TextBoxFor(model => Model.ReservationInfo.BegDATE, "{0:dd-MM-yyyy}", new { @id = "BegDATE", @class = "form-control datepicker mydate", @placeholder = "Начална дата" })
+                        @Html.ValidationMessageFor(model => model.ReservationInfo.BegDATE, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <span class="form-label">Дата до</span>
+
+                        @Html.TextBoxFor(model => Model.ReservationInfo.EndDATE, "{0:dd-MM-yyyy}", new { @id = "EndDATE", @class = "form-control datepicker mydate", @placeholder = "Крайна дата" })
+                        @Html.ValidationMessageFor(model => model.ReservationInfo.EndDATE, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row no-margin">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <span class="form_label">Възрастни</span>
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.ReservationInfo.Adults, new { htmlAttributes = new { @class = "form-control", min = 0, @placeholder = "0" } })
+                            @Html.ValidationMessageFor(model => model.ReservationInfo.Adults, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <span class="form_label">Деца</span>
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.ReservationInfo.Kids, new { htmlAttributes = new { @class = "form-control", min = 0, @placeholder = "0" } })
+                            @Html.ValidationMessageFor(model => model.ReservationInfo.Kids, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <span class="form-label">Брой Стай</span>
+                        @Html.EditorFor(model => model.ReservationInfo.Rooms, new { htmlAttributes = new { @class = "form-control", min = 1, @placeholder = "0" } })
+                        @Html.ValidationMessageFor(model => model.ReservationInfo.Rooms, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-4">
+                        <div class="form-btn">
+                            <input class="submit-btn btn btn-danger btn-block" name="button" type="submit" value="Ново търсене" />
+                        </div>
+                    </div>
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-2"></div>
+                </div>
+            </div>
+        </div>
+        <br />
+    </div>
+
+    <br />
+    
+    <div id="mvcGrid" class="container">
+        <p class="border"><b>Резултати от търсенето:</b><br /></p>
+        @Html.Grid(Model.AvailableRooms).Columns(columns =>
+   {
+       //columns.Add(c => c.RoomID).Titled("Номер на стая").Css("grid-center-align");
+       columns.Add(c => c.RoomTypeDescription).Titled("Тип").Css("grid-center-align");
+       columns.Add(c => c.RoomViewDescription).Titled("Изглед").Css("grid-center-align");
+       columns.Add(c => c.MaxPeople).Titled("Гости").Css("grid-center-align");
+       columns.Add(c => c.FreeRooms).Titled("Свободни стаи").Css("grid-center-align");
+       columns.Add(c => c.ReservedRooms).Titled("Резервирани стаи").Css("grid-center-align");
+       //columns.Add(c => c.RoomFloor).Titled("Етаж").Css("grid-center-align");
+       //columns.Add(c => c.Price).Titled("Цена");
+       columns.Add().Encoded(false).Sanitized(false).SetWidth(30).RenderValueAs
+                                                             (
+                                                                 c => "<button class='btn btn-outline-success btn-block' name='button' type='submit' value= '"+ c.Id +"'>Към резервация</button>"
+                                                             );
+   }).WithPaging(100).Sortable(true)
+
+    </div>
+}

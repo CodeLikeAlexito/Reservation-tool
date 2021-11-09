@@ -1,0 +1,115 @@
+﻿@{
+    ViewBag.Title = null;
+}
+
+<!DOCTYPE html>
+<html>
+
+<style>
+    body {
+        background-image: url('../../Images/day_terrace_bkg.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+
+<head>
+
+
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Резервация</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <link rel="shortcut icon" type="image/png" href="neg_favicon.png" />
+    <link href="style.css" rel="stylesheet">
+    <link href="~/Content/app-default.css" rel="stylesheet" />
+
+
+
+    <body>
+        <div class="row">
+            <div class="col-md-12">
+                <ul id="navigation">
+                    <li class="left">
+                        <img src="~/Images/ucb.logo.jpg" />
+                    </li>
+                    <li class="middle">
+                        "Регистрация Почивна база СОЗОПОЛ"
+                    </li>
+                    <li class="right">
+                        <ul class="toolbar">
+                            <li>#</li>
+                            <li>...</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-md-pull-7">
+            <div class="booking-form">
+                <form>
+                    <div class="form-group">
+                        <span class="form_label">Your Destination</span>
+                        <input class="form_control" type="text" placeholder="fsafasfas" />
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <span class="from-label">Check in</span>
+                                <input class="form-control" type="date" required />
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <span class="from-label">Check out</span>
+                                <input class="form-control" type="date" required />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <span class="form-label">Rooms</span>
+                                <select class="form-control">
+                                    <option>1</option>
+                                </select>
+                                <span class="select-arrow"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <span class="form-label">Adults</span>
+                                <select class="form-control">
+                                    <option>1</option>
+                                </select>
+                                <span class="select-arrow"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <span class="form-label">Children</span>
+                                <select class="form-control">
+                                    <option>1</option>
+                                </select>
+                                <span class="select-arrow"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-btn">
+                        <button class="submit-btn">Check availability</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </body>
+
+</html>

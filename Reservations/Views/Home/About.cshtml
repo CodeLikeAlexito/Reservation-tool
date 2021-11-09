@@ -1,0 +1,75 @@
+﻿@model Reservations.ViewModels.Home.HomeDataVM
+@{
+    ViewBag.Title = null;
+}
+
+@{ 
+    var hm = ViewData.Model;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Почивна база Созопол - резервации</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <link rel="shortcut icon" type="image/png" href="neg_favicon.png" />
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                Почивна база СОЗОПОЛ
+            </tr>
+        </thead>
+        <thead>
+            <tr>
+                Единични цени  за почивка при 10-дневна смяна и за единични нощувки 2020 година
+            </tr>
+        </thead>
+        <thead>
+            <tr>
+                <th scope="col">Смени</th>
+                <th scope="col">Расположение и вид на стаята</th>
+                <th scope="col">Last</th>
+                <th scope="col">Handle</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>mdo</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>fat</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>Larry</td>
+                <td>the Bird</td>
+                <td>twitter</td>
+            </tr>
+        </tbody>
+    </table>
+    <br />
+    <br />
+
+    <p>@hm.Name</p>
+    <p>@hm.Age</p>
+
+
+</body>
+</html>

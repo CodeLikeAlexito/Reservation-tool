@@ -1,0 +1,97 @@
+﻿.grid-pager {
+width:500px;
+}
+
+ul.pagination {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+
+    ul.pagination li {
+        float: left;
+        width: 23px;
+        padding: 3px;
+        margin-left: 5px;
+        border: 1px solid gray;
+        text-align:center;
+    }
+
+     ul.pagination li a{
+        
+        text-decoration: none;
+        text-align: center;
+    }
+
+    ul.pagination li a:hover {
+        background-color: aqua;
+        color: red;
+    }
+         
+
+li.active {
+    display: block;
+    float: left;
+    width: 23px;
+    padding: 5px;
+    margin-left: 5px;
+    background-color: aqua;
+    text-align: center;
+    border: 1px solid gray;
+
+}
+
+
+th.grid-header {
+     
+     background-color:#ededed;
+
+     font-size:small;
+}
+
+th.grid-header:hover { 
+     background-color:#C0C0C0;
+
+      
+}
+
+th.grid-header a { 
+    text-decoration:none;    
+    color:black;
+}
+
+th.grid-header a:visited { 
+    color:black;
+   
+}
+
+tr.grid-row:hover {
+    background-color:yellow;
+}
+ 
+.grid-cell {
+    border-collapse: collapse;
+    border-top-color: rgb(221, 221, 221);
+    border-top-style:solid;
+    border-top-width: 1px;
+    box-sizing: border-box;
+    color: rgb(51, 51, 51);
+    display: table-cell;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px; 
+    padding: 3px;
+    vertical-align: middle;
+     
+}
+
+.redGridRow {
+ background-color:#FFA4A4;
+}
+
+.grid-right-align {
+ text-align:right;
+}
+
+.grid-center-align {
+ text-align:center;
+}

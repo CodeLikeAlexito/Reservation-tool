@@ -1,0 +1,473 @@
+﻿@model Reservations.ViewModels.Reservation.ReservationVM
+
+@{
+    ViewBag.Title = "ReservatuionDetails";
+    Layout = "~/Views/_LayoutUsers.cshtml";
+}
+
+
+<script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+
+<script type="text/javascript">
+
+    function showMessageBoxTrue() {
+        $('#validationPassed').dialog({
+            title: "Резервация",
+            draggable: true,
+            resizable: false,
+            height: "auto",
+            width: 500,
+            modal: true,
+
+            show: {
+                effect: "blind",
+                duration: 1000
+            },
+            hide: {
+                effect: "explode",
+                duration: 1000
+            },
+
+            buttons: [
+                {
+                    text: "Направи резервация",
+                    icon: "ui-icon-heart",
+                    click: function () {
+                        $(this).dialog("close");
+
+                        var valdata = $('#rsvnForm').serialize();
+                        var RootUrl = '@Url.Content("~/")';
+                        var myUrl = '@Url.Action("Details", "Reservation", Request.Url.Scheme)';
+                        console.log(myUrl);
+
+                        $.ajax({
+                            url: myUrl,
+                            type: "POST",
+                            dataType: 'json',
+                            data: valdata,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+
+                                if (response.success) {
+                                    messageBoxAfterSuccRsvn();
+                                    console.log(response);
+                                } else {
+                                    window.location.href = '@Url.Action("RoomReservedAtSameTime", "Error", Request.Url.Scheme)';
+                                    console.log(response);
+                                }
+                            },
+                            error: function (response) {
+                                console.log("Ajax call went to error.. Controller: Reservations Action: Details");
+                            }
+                        });
+
+                    }
+                },
+                {
+                    text: "Назад",
+                    icon: "ui-icon-heart",
+                    click: function () {
+                          $(this).dialog("close");
+                    }
+                }
+                ]
+            });
+    };
+
+    function showMessageBoxFalse() {
+        $('#validationFailed').dialog({
+            title: "Резервация",
+            draggable: true,
+            resizable: false,
+            height: "auto",
+            width: 500,
+            modal: true,
+
+            show: {
+                effect: "blind",
+                duration: 1000
+            },
+            hide: {
+                effect: "explode",
+                duration: 1000
+            },
+
+            buttons: [
+                {
+                    text: "Нова резервация",
+                    icon: "ui-icon-heart",
+                    click: function () {
+                        $(this).dialog("close");
+                        window.location.href = '@Url.Action("Index", "Reservation", Request.Url.Scheme)';//'/Reservation/Index/';
+
+                    }
+                }
+            ]
+        });
+    };
+
+    function messageBoxAfterSuccRsvn() {
+
+        $('#successfulRsvn').dialog({
+            title: "Резервация Ви беше запазена!",
+            draggable: true,
+            resizable: false,
+            height: "auto",
+            width: 500,
+            modal: true,
+
+            show: {
+                effect: "blind",
+                duration: 1000
+            },
+            hide: {
+                effect: "explode",
+                duration: 1000
+            },
+
+            buttons: [
+                {
+                    text: "Към начална страница",
+                    icon: "ui-icon-heart",
+                    click: function () {
+                        $(this).dialog("close");
+
+                        window.location.href = '@Url.Action("Index", "Home", Request.Url.Scheme)';//'/Home/Index/';
+                    }
+                },
+                {
+                    text: "Нова резервация",
+                    icon: "ui-icon-heart",
+                    click: function () {
+                        $(this).dialog("close");
+                        window.location.href = '@Url.Action("Index", "Reservation", Request.Url.Scheme)';//'/Reservation/Index/';
+                    }
+                }
+            ]
+        });
+
+    };
+
+    /* Passing selected Room IDs to server for db validation check if they are free and getting response */
+    $(document).ready(function () {
+    var url = '@Url.Action("CheckIfRoomIsFree", "Reservation", Request.Url.Scheme)'; // Controller method
+        $('#makeRsvn').click(function () {
+        var begDate = $('#BegDATE').val();
+        var endDate = $('#EndDATE').val();
+        var numDropDownLists = $("[id^=roomViewId]").length;
+        console.log(numDropDownLists);
+        var count;
+        var dropDownListValues = new Array();
+        for (count = 0; count < numDropDownLists; count++) {
+            dropDownListValues[count] = $('#roomIDId'.concat(count)).val();
+            }
+            console.info(JSON.stringify(dropDownListValues));
+        if (count === 0) {
+            console.log("No rooms are selected. Array is empty");
+        }
+        else {
+            $.each(dropDownListValues, function (i, p) {
+
+                $.getJSON(url, { roomId: p, begDate: begDate, endDate: endDate }, function (response) {
+                    var roomsChecked = [];
+                    roomsChecked.push(response);
+                    console.info(roomsChecked);
+                    if (i + 1 === numDropDownLists) {
+                        if (roomsChecked.every(Boolean)) {
+                            console.log('bbbb');
+                            showMessageBoxTrue();
+                        } else {
+                            console.log('aaaa');
+                            showMessageBoxFalse();
+                        }
+                    } else {
+                        console.log('Inside else statement');
+                    }
+
+                });
+            });
+        }
+    });
+    });
+
+</script>
+
+@using (Html.BeginForm(null, null, new { @id = string.Empty }, FormMethod.Post, new { @id = "rsvnForm" }))
+{
+    <div class="container p-3 my-3 text-dark text-center">
+        <h3>РЕЗЕРВАЦИОННА ФОРМА - ДЕТАЙЛИ</h3>
+        <h6>Почивна база Созопол - Уникредит Булбанк</h6>
+        <img src="~/Images/ucb.logo.jpg" />
+    </div>
+    <div class="container border border-danger rounded">
+        <br />
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Дата настаняване</label>
+                    <div class="form-group">
+                        @*@Html.TextBoxFor(model => Model.ReservationInfo.BegDATE, "{0:dd-MM-yyyy}", new { @id = "BegDATE", @class = "form-control", @placeholder = "Начална дата", @readonly = true })*@
+                        @Html.EditorFor(model => Model.ReservationInfo.BegDATEDescription, new { htmlAttributes = new { @id = "BegDATE", @class = "form-control", @placeholder = "Начална дата", @readonly = true } })
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Дата напускане</label>
+                    <div class="form-group">
+                        @*@Html.TextBoxFor(model => Model.ReservationInfo.EndDATE, "{0:dd-MM-yyyy}", new { @id = "EndDATE", @class = "form-control", @placeholder = "Крайна дата", @readonly = true })*@
+                        @Html.EditorFor(model => Model.ReservationInfo.EndDATEDescription, new { htmlAttributes = new { @id = "EndDATE", @class = "form-control", @placeholder = "Крайна дата", @readonly = true } })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Нощувки</label>
+                    <div class="form-group">
+                        @Html.EditorFor(model => model.ReservationInfo.Nights, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Цена</label>
+                    <div class="form-group">
+                        @Html.EditorFor(model => model.ReservationInfo.TotalPrice, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Смяна</label>
+                    <div class="form-group">
+                        @Html.EditorFor(model => model.ReservationInfo.Period, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Възрастни</label>
+                    <div class="form-group">
+                        @Html.EditorFor(model => model.ReservationInfo.Adults, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Деца</label>
+                    <div class="form-group">
+                        @Html.EditorFor(model => model.ReservationInfo.Kids, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Брой стай</label>
+                    <div class="form-group">
+                        @Html.EditorFor(model => model.ReservationInfo.Rooms, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    for (int i = 0; i < Model.RoomList.Count; i++)
+    {
+        var RoomNum = i + 1;
+        @Html.HiddenFor(m => m.RoomList[i].RoomType)
+        @Html.HiddenFor(m => m.RoomList[i].RoomView)
+        @Html.HiddenFor(m => m.RoomList[i].RoomFloor)
+        @Html.HiddenFor(m => m.RoomList[i].IsMainRoom);
+        <br />
+        <p class="text-center">Стая номер @RoomNum</p>
+        <div class="container" id="RoomReserved">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Тип стая</label>
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.RoomList[i].RoomTypeDescription, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Изглед</label>
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.RoomList[i].RoomViewDescription, new { htmlAttributes = new { @id = "roomViewId", @class = "form-control", @readonly = true } })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Етаж</label>
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.RoomList[i].RoomFloorDescription, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Номер на стая</label>
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.RoomList[i].RoomID, new { htmlAttributes = new { @id = "roomIDId" + i, @class = "form-control", @readonly = true } })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    for (int i = 0; i < Model.GuestList.Count; i++)
+    {
+        <br />
+        @Html.HiddenFor(m => m.GuestList[i].PersonType)
+        @Html.HiddenFor(m => m.GuestList[i].PersonAge)
+        @Html.HiddenFor(m => m.GuestList[i].Gender)
+        @Html.HiddenFor(m => m.GuestList[i].IsMainGuest);
+        <div class="container">
+            <p class="text-center">Гост номер </p>
+
+
+            <table class="table table-hover table-sm">
+                <tr>
+                    <td>Име </td>
+                    <td>
+                        @Html.EditorFor(m => m.GuestList[i].FirstName, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;", @readonly = true } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Презиме </td>
+                    <td>
+                        @Html.EditorFor(m => m.GuestList[i].LastName, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;", @readonly = true } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Фамилия </td>
+                    <td>
+                        @Html.EditorFor(m => m.GuestList[i].FamilyName, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;", @readonly = true } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Тип гост </td>
+                    <td>
+                        @Html.EditorFor(model => model.GuestList[i].PersonTypeDescription, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;", @readonly = true } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Възраст </td>
+                    <td>
+                        @Html.EditorFor(model => model.GuestList[i].PersonAgeDescription, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;", @readonly = true } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Пол </td>
+                    <td>
+                        @Html.EditorFor(model => model.GuestList[i].PersonGenderDescription, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;", @readonly = true } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Телефонен номер </td>
+                    <td>
+                        @Html.EditorFor(m => m.GuestList[i].PhoneNumber, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;", @readonly = true } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>ЕГН </td>
+                    <td>
+                        @Html.EditorFor(m => m.GuestList[i].EGN, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;", @readonly = true } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Дата на раждане </td>
+                    <td>
+                        @*@Html.TextBoxFor(model => Model.GuestList[i].BirthDate, "{0:dd-MM-yyyy}", new { @class = "form-control-sm datepicker", @style = "width:800px;", @readonly = true })*@
+                        @*@Html.EditorFor(model => Model.GuestList[i].BirthDate, new { htmlAttributes = new { @class = "form-control-sm datepicke", @style = "width:800px;", @readonly = true } })*@
+                        @Html.EditorFor(model => Model.GuestList[i].BirthDateDescription, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;", @readonly = true } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Стая </td>
+                    <td>
+                        @Html.EditorFor(m => m.GuestList[i].GuestRoomID, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;", @readonly = true } })
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+    <br />
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-3">
+                <div class="form-btn">
+                    <input class="submit-btn btn btn-success btn-block" id="makeRsvn" type="button" value="Потвърждавам резервация" />
+                </div>
+            </div>
+                <div class="col-md-3">
+                    <div class="form-btn">
+                        @*<input class="submit-btn btn btn-danger btn-block" id="makeCorr" type="button" value="Направи корекция" />*@
+                        <input class="submit-btn btn btn-danger btn-block" name="button" type="submit" value="Направи корекция" />
+                    </div>
+                </div>
+            <div class="col-md-3"></div>
+        </div>
+    </div>
+    <br />
+    <div id="validationPassed" style="display:none">
+
+        @if (Model.RoomList.Count == 1)
+        {
+            <p class="text-center">
+                Стаята която избрахте в момента е налична.
+                Цената която трябва да заплатите е <b>@Model.ReservationInfo.TotalPrice лева.</b>
+            </p>
+            <p class="text-center"><b>Натиснете бутона "Направи резервация".</b></p>
+        }
+        else
+        {
+            <p class="text-center">
+                Стаите които избрахте в момента са налични.
+                Цената която трябва да заплатите е <b>@Model.ReservationInfo.TotalPrice лева.</b>
+            </p>
+            <p class="text-center"><b>Натиснете бутона "Направи резервация".</b></p>
+        }
+    </div>
+    <div id="validationFailed" style="display:none">
+
+        @if (Model.RoomList.Count == 1)
+        {
+            <p class="text-center">
+                Стаята която избрахте, в момента беше запазена от друг.
+                Съжаляваме за случилото се. Моля изберете друга стая.
+            </p>
+            <p class="text-center">Ще направим всичко възможно да си намерите стая която ве устройва.</p>
+            <p class="text-center">Направете нова резервация в останалите свободни стаи.</p>
+        }
+        else
+        {
+            <p class="text-center">
+                Една или повече от стаите които запазихте, в момента бяха запазени от друг.
+                Съжаляваме за случилото се. Моля изберете други стаи.
+            </p>
+            <p class="text-center">Ще направим всичко възможно да си намерите стая която ве устройва.</p>
+            <p class="text-center">Направете нова резервация в останалите свободни стаи.</p>
+        }
+    </div>
+    <div id="successfulRsvn" style="display:none">
+
+        <p class="text-center">
+            Благодарим за направената резервация.
+            Моля, имайте предвид, че плащането по нея трябва да стане в рамките на 5 работни дни.
+            В случай, че не бъде направено, резервацията се анулира автоматично.
+        </p>
+        <p class="text-center">При допълнителни въпроси, можете да се свържете с нас на посочените контакти.</p>
+    </div>
+}
+

@@ -1,0 +1,386 @@
+﻿@model Reservations.ViewModels.Reservation.ReservationVM
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_AdminLayoutPage.cshtml";
+    Reservations.Classes.Utils.UserInfo userInfo = ((Reservations.Classes.Utils.UserInfo)Session["UserInfo"]);
+}
+
+<script src="~/Scripts/datepicker-bg.js"></script>
+
+<script type="text/javascript">
+
+    /* Datepicker */
+    $(document).ready(function () {
+        $('.datepicker').datepicker({
+            dateFormat: "dd-M-yy"
+        });
+
+    });
+
+    /* Datepicker with posibility to change years faster */
+    $(document).ready(function () {
+        $('.birthdate').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            yearRange: '-100:+0',
+            dateFormat: "dd-M-yy"
+        });
+    });
+
+    /* Inserting selected Period Value in Perod Drop Down List */
+    $(document).ready(function () {
+        var period = $('#PeriodID').val();
+        $('#dropDownListEdit').val(period);
+    });
+
+    /* Createing Date in JS */
+    function ToJavaScriptDate(val) {
+        val = new Date(parseInt(val.substr(6)));
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        return val.getDate() + "-" + months[val.getMonth()] + "-" + val.getFullYear();
+    }
+
+    $(function () {
+        $('#dropDownListEdit').change(function () {
+            var value = $(this).val();
+
+            if (value != null) {
+                $.post("@Url.Action("GetBegEndDates", "Reservation")?value=" + value, function (res) {
+
+                    if (res.Success === "true") {
+
+                        var BegDATE = ToJavaScriptDate(res.Data.BegDATE);
+                        var EndDATE = ToJavaScriptDate(res.Data.EndDATE);
+                        $('#begDate').val(BegDATE);
+                        $('#accDate').val(BegDATE);
+                        $('#endDate').val(EndDATE);
+                        $('#leaveDate').val(EndDATE);
+
+                    } else {
+
+                        var BegDATE = null;
+                        var EndDATE = null;
+                        $('#begDate').val(BegDATE);
+                        $('#accDate').val(BegDATE);
+                        $('#endDate').val(EndDATE);
+                        $('#leaveDate').val(EndDATE);
+
+                    }
+
+                });
+            } else {
+                alert("Error");
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#begDate').change(function () {
+            var begDate = $('#begDate').val();
+            $('#accDate').val(begDate);
+        });
+
+        $('#endDate').change(function () {
+            var endDate = $('#endDate').val();
+            $('#leaveDate').val(endDate);
+        });
+
+        $('#accDate').change(function () {
+            var accDate = $('#accDate').val();
+            $('#begDate').val(accDate);
+        });
+
+        $('#leaveDate').change(function () {
+            var leaveDate = $('#leaveDate').val();
+            $('#endDate').val(leaveDate);
+        });
+    });
+
+</script>
+
+@using (Html.BeginForm())
+{
+    <div class="container text-center">
+        <h5>Екран за редакция на резервация номер @Model.ReservationInfo.ReservationID</h5>
+    </div>
+    <br />
+    <table class="table table-hover table-sm container">
+        @Html.HiddenFor(m => m.ReservationInfo.ID)
+        @Html.HiddenFor(m => m.ReservationInfo.ReservationID)
+        <tr>
+            <td>Статус на резервация </td>
+            <td>
+                @Html.EnumDropDownListFor(m => m.ReservationInfo.RsvnStatus, "Статус", new { @class = "form-control-sm", @style = "width:800px;" })
+                @Html.ValidationMessageFor(model => model.ReservationInfo.RsvnStatus, "", new { @class = "text-danger" })
+
+            </td>
+        </tr>
+        <tr>
+            <td>Коментар </td>
+            <td>
+                @Html.EditorFor(m => m.ReservationInfo.Comment, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+            </td>
+        </tr>
+        <tr>
+            <td>Смяна </td>
+            <td>
+                @Html.Hidden("PeriodValue", Model.ReservationInfo.Period, new { @id = "PeriodID" })
+                @Html.DropDownListFor(m => m.ReservationInfo.Period, Model.ReservationInfo.PeriodList, "Изберете смяна", new { @class = "form-control-sm", @id = "dropDownListEdit", @style = "width:800px;" })
+                @Html.ValidationMessageFor(m => m.ReservationInfo.Period, "", new { @class = "text-danger" })
+            </td>
+        </tr>
+        <tr>
+            <td>Начална дата </td>
+            <td>
+                @Html.TextBoxFor(model => Model.ReservationInfo.BegDATE, "{0:dd-MM-yyyy}", new { @id = "begDate", @class = "form-control-sm birthdate", @style = "width:800px;" })
+            </td>
+        </tr>
+        <tr>
+            <td>Крайна дата </td>
+            <td>
+                @Html.TextBoxFor(model => Model.ReservationInfo.EndDATE, "{0:dd-MM-yyyy}", new { @id = "endDate", @class = "form-control-sm birthdate", @style = "width:800px;" })
+            </td>
+        </tr>
+        <tr>
+            <td>Дата на резервация </td>
+            <td>
+                @Html.TextBoxFor(model => Model.ReservationInfo.RsvnDATE, "{0:dd-MM-yyyy}", new { @class = "form-control-sm birthdate", @style = "width:800px;" })
+            </td>
+        </tr>
+        <tr>
+            <td>Дата на настаняване </td>
+            <td>
+                @Html.TextBoxFor(model => Model.ReservationInfo.AccommodationDATE, "{0:dd-MM-yyyy}", new { @id = "accDate", @class = "form-control-sm birthdate", @style = "width:800px;" })
+            </td>
+        </tr>
+        <tr>
+            <td>Дата на напускане </td>
+            <td>
+                @Html.TextBoxFor(model => Model.ReservationInfo.LeavingDATE, "{0:dd-MM-yyyy}", new { @id = "leaveDate", @class = "form-control-sm birthdate", @style = "width:800px;" })
+            </td>
+        </tr>
+        <tr>
+            <td>Дата на плащане </td>
+            <td>
+                @Html.TextBoxFor(model => Model.ReservationInfo.PaymentDATE, "{0:dd-MM-yyyy}", new { @class = "form-control-sm birthdate", @style = "width:800px;" })
+            </td>
+        </tr>
+        <tr>
+            <td>Дата на отказ </td>
+            <td>
+                @Html.TextBoxFor(model => Model.ReservationInfo.CancellationDATE, "{0:dd-MM-yyyy}", new { @class = "form-control-sm birthdate", @style = "width:800px;" })
+            </td>
+        </tr>
+        <tr>
+            <td>Нощувки </td>
+            <td>
+                @Html.EditorFor(m => m.ReservationInfo.Nights, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+            </td>
+        </tr>
+        <tr>
+            <td>Цена </td>
+            <td>
+                @Html.EditorFor(m => m.ReservationInfo.TotalPrice, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+            </td>
+        </tr>
+        <tr>
+            <td>Направил резервация </td>
+            <td>
+                @Html.EditorFor(m => m.ReservationInfo.RsvnMaker, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+            </td>
+        </tr>
+        <tr>
+            <td>Възрастни </td>
+            <td>
+                @Html.EditorFor(m => m.ReservationInfo.Adults, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+            </td>
+        </tr>
+        <tr>
+            <td>Деца </td>
+            <td>
+                @Html.EditorFor(m => m.ReservationInfo.Kids, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+            </td>
+        </tr>
+        <tr>
+            <td>Брой стаи </td>
+            <td>
+                @Html.EditorFor(m => m.ReservationInfo.Rooms, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+            </td>
+        </tr>
+        <tr>
+            <td>Референция на плащането </td>
+            <td>
+                @Html.EditorFor(m => m.ReservationInfo.PaymentRefNo, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+            </td>
+        </tr>
+
+
+    </table>
+
+    for (int i = 0; i < Model.GuestList.Count; i++)
+    {
+        var guest = i + 1;
+        <div class="container">
+            <p class="text-center">Гост номер @guest </p>
+
+            <script type="text/javascript">
+            $(document).ready(function () {
+                var period = $('#GuestRoomID'.concat(@i)).val();
+                $('#guestRoomListId'.concat(@i)).val(period);
+            });
+            </script>
+
+            <table class="table table-hover table-sm">
+                @Html.HiddenFor(m => m.GuestList[i].GusetID)
+                @Html.HiddenFor(m => m.GuestList[i].ReservationID)
+                @Html.HiddenFor(m => m.GuestList[i].IsMainGuest)
+                <tr>
+                    <td>Име </td>
+                    <td>
+                        @Html.EditorFor(m => m.GuestList[i].FirstName, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Презиме </td>
+                    <td>
+                        @Html.EditorFor(m => m.GuestList[i].LastName, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Фамилия </td>
+                    <td>
+                        @Html.EditorFor(m => m.GuestList[i].FamilyName, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Тип гост </td>
+                    <td>
+                        @Html.EnumDropDownListFor(m => m.GuestList[i].PersonType, "Изберете тип", new { @class = "form-control-sm guesttype", @id = "guestType", @style = "width:800px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Възраст </td>
+                    <td>
+                        @Html.EnumDropDownListFor(m => m.GuestList[i].PersonAge, "Изберете възраст", new { @class = "form-control-sm guestage", @id = "guestAge", @style = "width:800px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Пол </td>
+                    <td>
+                        @Html.EnumDropDownListFor(m => m.GuestList[i].Gender, "Изберете пол", new { @class = "form-control-sm guestgender", @id = "guestGender", @style = "width:800px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Телефонен номер </td>
+                    <td>
+                        @Html.EditorFor(m => m.GuestList[i].PhoneNumber, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>ЕГН </td>
+                    <td>
+                        @Html.EditorFor(m => m.GuestList[i].EGN, new { htmlAttributes = new { @class = "form-control-sm", @style = "width:800px;" } })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Дата на раждане </td>
+                    <td>
+                        @Html.TextBoxFor(model => Model.GuestList[i].BirthDate, "{0:dd-MM-yyyy}", new { @class = "form-control-sm datepicker", @style = "width:800px;" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Стая </td>
+                    <td>
+                        @Html.Hidden("GuestRoomId", Model.GuestList[i].GuestRoomID, new { @id = "GuestRoomID" + i })
+                        @Html.DropDownListFor(m => m.GuestList[i].GuestRoomID, Model.GuestList[i].GuestRoomIDList, "Изберете номер на стая", new { @class = "form-control-sm guestroomid", @id = "guestRoomListId" + i, @style = "width:800px;" })
+                        @Html.ValidationMessageFor(m => m.GuestList[i].GuestRoomID, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+
+    for (int j = 0; j < Model.RoomList.Count; j++)
+    {
+        var room = j + 1;
+        <div class="container">
+            <p class="text-center">Стая номер @room</p>
+
+            <script type="text/javascript">
+            $(document).ready(function () {
+                var roomTypeVal = $('#RoomTypeID'.concat(@j)).val();
+                $('#roomTypeDropDownList'.concat(@j)).val(roomTypeVal);
+
+                var roomViewVal = $('#RoomViewID'.concat(@j)).val();
+                $('#roomViewDropDownList'.concat(@j)).val(roomViewVal);
+
+                var roomFloorVal = $('#RoomFloorID'.concat(@j)).val();
+                $('#roomFloorDropDownList'.concat(@j)).val(roomFloorVal);
+
+                var roomIDVal = $('#RoomidID'.concat(@j)).val();
+                $('#roomIDDropDownList'.concat(@j)).val(roomIDVal);
+            });
+
+            </script>
+
+            <table class="table table-hover table-sm">
+                @Html.HiddenFor(m => m.RoomList[j].Id)
+                @Html.HiddenFor(m => m.RoomList[j].ReservationId)
+                @Html.HiddenFor(m => m.RoomList[j].IsMainRoom)
+                <tr>
+                    <td>Тип стая </td>
+                    <td>
+                        @Html.Hidden("RoomTypeID", Model.RoomList[j].RoomType, new { @id = "RoomTypeID" + j })
+                        @Html.DropDownListFor(m => m.RoomList[j].RoomType, Model.RoomList[j].RoomTypeList, "Изберете тип стая", new { @class = "form-control-sm roomtypelist", @id = "roomTypeDropDownList" + j, @style = "width:800px;" })
+                        @Html.ValidationMessageFor(m => m.RoomList[j].RoomType, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Описание </td>
+                    <td>
+                        @Html.Hidden("RoomViewID", Model.RoomList[j].RoomView, new { @id = "RoomViewID" + j })
+                        @Html.DropDownListFor(m => m.RoomList[j].RoomView, Model.RoomList[j].RoomViewList, "Изберете описание", new { @class = "form-control-sm roomviewlist", @id = "roomViewDropDownList" + j, @style = "width:800px;" })
+                        @Html.ValidationMessageFor(m => m.RoomList[j].RoomView, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Етаж </td>
+                    <td>
+                        @Html.Hidden("RoomFloorID", Model.RoomList[j].RoomFloor, new { @id = "RoomFloorID" + j })
+                        @Html.DropDownListFor(m => m.RoomList[j].RoomFloor, Model.RoomList[j].RoomFloorList, "Изберете етаж", new { @class = "form-control-sm roomfloorlist", @id = "roomFloorDropDownList" + j, @style = "width:800px;" })
+                        @Html.ValidationMessageFor(m => m.RoomList[j].RoomFloor, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>Номер на стая </td>
+                    <td>
+                        @Html.Hidden("RoomidID", Model.RoomList[j].RoomID, new { @id = "RoomidID" + j })
+                        @Html.DropDownListFor(m => m.RoomList[j].RoomID, Model.RoomList[j].RoomIDList, "Изберете номер стая", new { @class = "form-control-sm roomidlist", @id = "roomIDDropDownList" + j, @style = "width:800px;" })
+                        @Html.ValidationMessageFor(m => m.RoomList[j].RoomID, "", new { @class = "text-danger" })
+                    </td>
+                </tr>
+            </table>
+        </div>
+    }
+    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-3">
+                <div class="form-btn">
+                    <input class="btn btn-outline-success btn-block" type="submit" name="button" value="Запази промяни" />
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="form-btn">
+                    <input class="btn btn-outline-danger btn-block" type="submit" name="button" value="Отказ" />
+                </div>
+            </div>
+            <div class="col-lg-3"></div>
+        </div>
+    </div>
+    <br />
+}
+
+

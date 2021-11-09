@@ -1,0 +1,372 @@
+﻿@model Reservations.ViewModels.Reservation.ReservationVM
+
+@{
+    ViewBag.Title = "Reservation";
+    Layout = "~/Views/Shared/_MakeReservationLayoutPage.cshtml";
+}
+
+<script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+<script src="~/Scripts/datepicker-bg.js"></script>
+@*<script src="~/Scripts/script-custom-validator.js"></script>*@
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        jQuery.validator.methods["date"] = function (value, element) { return true; }
+    });
+</script>
+
+
+@using (Html.BeginForm(null, null, new { @id = string.Empty }, FormMethod.Post, new { @id = "rsvnForm" }))
+{
+
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    HtmlHelper.UnobtrusiveJavaScriptEnabled = true;
+
+    <div id="rsvnInfo" class="container border border-danger">
+        <br />
+        <h5 class="text-center">Обща информация за резервацията</h5>
+        <div class="form-group">
+            <span class="form_label">Смяна</span>
+
+            @*@Html.HiddenFor(m => m.ReservationInfo.Period)*@
+            @Html.DropDownListFor(m => m.ReservationInfo.Period, Model.ReservationInfo.PeriodList, "Изберете смяна", new { @class = "form-control", @id = "dropDownList", @readonly = true, @disabled = "disabled" })
+            @Html.ValidationMessageFor(m => m.ReservationInfo.Period, "", new { @class = "text-danger" })
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <span class="from-label">Дата от</span>
+                    <div class="form-group">
+
+                        @*@Html.TextBoxFor(model => Model.ReservationInfo.BegDATE, "{0:dd-MM-yyyy}", new { @id = "BegDATE", @class = "form-control", @placeholder = "Начална дата", @readonly = true })*@
+                        @*@Html.EditorFor(model => Model.ReservationInfo.BegDATE, new { htmlAttributes = new { @id = "BegDATE", @class = "form-control", @placeholder = "Начална дата", @readonly = true } })*@
+                        @Html.EditorFor(model => Model.ReservationInfo.BegDATEDescription, new { htmlAttributes = new { @id = "BegDATE", @class = "form-control", @placeholder = "Начална дата", @readonly = true } })
+                        @Html.HiddenFor(model => Model.ReservationInfo.BegDATE)
+                    </div>
+                    @Html.ValidationMessageFor(model => model.ReservationInfo.BegDATEDescription, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <div class="form-group">
+                        <span class="from-label">Дата до</span>
+                        <div class="form-group">
+
+
+                            @*@Html.TextBoxFor(model => Model.ReservationInfo.EndDATE, "{0:dd-MM-yyyy}", new { @id = "EndDATE", @class = "form-control", @placeholder = "Начална дата", @readonly = true })*@
+                            @*@Html.EditorFor(model => Model.ReservationInfo.EndDATE, new { htmlAttributes = new { @id = "EndDATE", @class = "form-control", @placeholder = "Крайна дата", @readonly = true } })*@
+                            @Html.EditorFor(model => Model.ReservationInfo.EndDATEDescription, new { htmlAttributes = new { @id = "EndDATE", @class = "form-control", @placeholder = "Крайна дата", @readonly = true } })
+                            @Html.HiddenFor(model => Model.ReservationInfo.EndDATE)
+                        </div>
+                        @Html.ValidationMessageFor(model => model.ReservationInfo.EndDATEDescription, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <span class="form_label">Възрастни</span>
+                    <div class="form-group">
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.ReservationInfo.Adults, new { htmlAttributes = new { @id = "NumAdults", @class = "form-control", min = 0, @readonly = true } })
+                            @Html.ValidationMessageFor(model => model.ReservationInfo.Adults, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <span class="form_label">Деца</span>
+                    <div class="form-group">
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.ReservationInfo.Kids, new { htmlAttributes = new { @id = "NumKids", @class = "form-control", min = 0, @readonly = true } })
+                            @Html.ValidationMessageFor(model => model.ReservationInfo.Kids, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <span class="form_label">Брой стай</span>
+                    <div class="form-group">
+                        <div class="form-group">
+                            @Html.EditorFor(model => model.ReservationInfo.Rooms, new { htmlAttributes = new { @class = "form-control", min = 1, @readonly = true } })
+                            @Html.ValidationMessageFor(model => model.ReservationInfo.Rooms, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <span class="form_label">Направил резервация</span>
+                    @Html.EditorFor(m => m.ReservationInfo.RsvnMaker, new { htmlAttributes = new { @class = "form-control", @type = "text", @readonly = true } })
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <span class="form_label">Брой нощувки</span>
+                    @Html.EditorFor(m => m.ReservationInfo.Nights, new { htmlAttributes = new { @class = "form-control", @type = "text", @readonly = true } })
+                </div>
+            </div>
+        </div>
+        @Html.HiddenFor(m => m.ReservationInfo.TotalPrice)
+    </div>
+
+    for (int index = 0; index < Model.RoomList.Count; index++)
+    {
+        <br />
+        @Html.HiddenFor(m => m.RoomList[index].IsMainRoom);
+        var room = index + 1;
+        var text = "Информация относно стая номер " + @room;
+
+
+        <div class="container border ">
+            <br />
+            <h5 class="text-center">@text</h5>
+            <div class="row">
+                <div class="col">
+                    <label>Изберете тип стая</label>
+                    <div class="form-group">
+                        @Html.DropDownListFor(m => Model.RoomList[index].RoomType, Model.RoomList[index].RoomTypeList, new { @class = "form-control invent roomtype", @id = "roomTypeDropDownList" + index })
+                        @Html.ValidationMessageFor(m => Model.RoomList[index].RoomType, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Описание на стая</label>
+                    <div class="form-group">
+                        @Html.DropDownListFor(m => m.RoomList[index].RoomView, Model.RoomList[index].RoomViewList, new { @class = "form-control roomview", @id = "roomViewDropDownList" + index })
+                        @Html.ValidationMessageFor(m => m.RoomList[index].RoomView, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Изберете етаж</label>
+
+                    @Html.DropDownListFor(m => m.RoomList[index].RoomFloor, Model.RoomList[index].RoomFloorList, "Изберете етаж", new { @class = "form-control roomlevel", @id = "roomLevelDropDownList" + index })
+                    @Html.ValidationMessageFor(m => m.RoomList[index].RoomFloor, "", new { @class = "text-danger" })
+                </div>
+                <div class="col">
+                    <label>Изберете номер на стая</label>
+                    @Html.DropDownListFor(m => m.RoomList[index].RoomID, Model.RoomList[index].RoomIDList, "Изберете стая", new { @class = "form-control roomid", @id = "roomIdDropDownList" + index })
+                    @Html.ValidationMessageFor(m => m.RoomList[index].RoomID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <br />
+        </div>
+    }
+
+    for (int j = 0; j < Model.GuestList.Count; j++)
+    {
+        @Html.HiddenFor(m => m.GuestList[j].IsMainGuest);
+        var text = "";
+        var k = j + 1;
+        var additionalText = "";
+        @*if (j == 0)
+            {
+                text = "Въведете вашите данни";
+            }
+            else
+            {
+                text = "Въведете данни относно гост номер " + k;
+            }*@
+
+        if (Model.GuestList[j].PersonAge != Reservations.Models.PersonAge.Adult)
+        {
+            <script type="text/javascript">
+                //console.log('here');
+                //var dropDownList = $('#guestAge'.concat(@j));
+                //console.log(dropDownList);
+                //$(dropDownList).concat("[value='65']").attr("disabled", "disabled");
+                //$("option[value='65']").attr("disabled", "disabled");
+            </script>
+        }
+
+
+
+        if (Model.GuestList[j].PersonAge == Reservations.Models.PersonAge.Adult)
+        {
+            if (j == 0)
+            {
+                text = "Въведете вашите данни";
+            }
+            else
+            {
+                text = "Въведете данни относно възрастен гост номер " + k;
+            }
+
+        }
+        else
+        {
+            text = "Въведете данни относно дете от 3 до 12г.";
+            additionalText = "Ако детето Ви е от 0 до 3 годишна възраст, моля променете възраста от падащото меню.";
+        }
+
+        <br />
+        <div class="container border ">
+            <br />
+            <h5 class="text-center">@text</h5>
+            <p class="text-danger">@additionalText</p>
+            <div class="row">
+                <div class="col">
+                    <label>Име</label>
+                    @Html.EditorFor(m => m.GuestList[j].FirstName, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "Име" } })
+                    @Html.ValidationMessageFor(m => m.GuestList[j].FirstName, "", new { @class = "text-danger" })
+                </div>
+                <div class="col">
+                    <label>Презиме</label>
+                    @Html.EditorFor(m => m.GuestList[j].LastName, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "Презиме" } })
+                </div>
+                <div class="col">
+                    <label>Фамилия</label>
+                    @Html.EditorFor(m => m.GuestList[j].FamilyName, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "Фамилия" } })
+                    @Html.ValidationMessageFor(m => m.GuestList[j].FamilyName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Тип гост</label>
+                    @Html.EnumDropDownListFor(m => m.GuestList[j].PersonType, "Изберете тип", new { @class = "form-control guesttype", @id = "guestType" + j })
+                    @Html.ValidationMessageFor(m => m.GuestList[j].PersonType, "", new { @class = "text-danger" })
+                </div>
+                <div class="col">
+                    <label>Възраст</label>
+                    @Html.EnumDropDownListFor(m => m.GuestList[j].PersonAge, "Изберете възраст", new { @class = "form-control guestview", @id = "guestAge" + j })
+                    @Html.ValidationMessageFor(m => m.GuestList[j].PersonAge, "", new { @class = "text-danger" })
+                </div>
+                <div class="col">
+                    <label>Пол</label>
+                    @Html.EnumDropDownListFor(m => m.GuestList[j].Gender, "Изберете пол", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.GuestList[j].Gender, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Телефонен номер</label>
+                    <div class="form-row">
+                        @Html.EditorFor(m => m.GuestList[j].PhoneNumber, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "+359...." } })
+                        <small id="phoneHelpInline" class="text-muted">
+                            Моля пишете си номера с +359 отпред...
+                        </small>
+                    </div>
+                </div>
+                <div class="col">
+                    <label>ЕГН</label>
+                    <div class="form-row">
+                        @Html.EditorFor(m => m.GuestList[j].EGN, new { htmlAttributes = new { @class = "form-control", @type = "text", @placeholder = "ЕГН" } })
+                        @Html.ValidationMessageFor(m => m.GuestList[j].EGN, "", new { @class = "text-danger" })
+                        <small id="egnHelpInline" class="text-muted">
+                            ЕГН
+                        </small>
+                    </div>
+                </div>
+                <div class="col">
+                    <label>Дата на раждане</label>
+                    <div class="form-row">
+                        @Html.EditorFor(m => m.GuestList[j].BirthDate, new { htmlAttributes = new { @id = "birthDateId" + j, @class = "form-control birthdate", @placeholder = "Дата на раждане" } })
+                        @Html.ValidationMessageFor(m => m.GuestList[j].BirthDate, "", new { @class = "text-danger" })
+                        <small id="birthDateHelpInline" class="text-muted">
+                            Дата на раждане
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Стая</label>
+                    @Html.DropDownListFor(m => m.GuestList[j].GuestRoomID, Model.GuestList[j].GuestRoomIDList, "Изберете номер на стая", new{@class = "form-control guestroomid",
+                       @id = "guestRoomId" + j})
+                    @Html.ValidationMessageFor(m => m.GuestList[j].GuestRoomID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <br />
+        </div>
+
+    }
+    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-3">
+                <div class="form-btn">
+                    <input class="submit-btn btn btn-outline-danger btn-lg btn-block" id="submitRsvn" type="button" value="Направи резервация" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-btn">
+                    <input class="submit-btn btn btn-outline-success btn-lg btn-block" type="submit" name="button" value="Към търсачка" />
+                </div>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+        <br />
+    </div>
+    <br />
+    <div id="messageBox" style="display:none">
+        @if (Model.RoomList.Count == 1)
+        {
+            <p class="text-center">
+                Стаята която избрахте в момента е налична.
+                Побързайте да финализирате вашата резервация, преди някои да го направи преди вас.
+                Ще бъде изчислена цената, която трябва да заплатите в срок от 5 дни.
+            </p>
+            <p class="text-center">Продължи?</p>
+        }
+        else
+        {
+            <p class="text-center">
+                Стаите които избрахте в момента са налични.
+                Побързайте да финализирате вашата резервация, преди някои да го направи преди вас.
+                Ще бъде изчислена цената, която трябва да заплатите в срок от 5 дни.
+            </p>
+            <p class="text-center">Продължи?</p>
+        }
+
+    </div>
+
+    <div id="validationFalse" style="display:none">
+        @if (Model.RoomList.Count == 1)
+        {
+            <p class="text-center">
+                Стаята която избрахте, в момента беше запазена от друг.
+                Съжаляваме за случилото се. Моля изберете друга стая.
+            </p>
+            <p class="text-center">Ще направим всичко възможно да си намерите стая която ве устройва.</p>
+        }
+        else
+        {
+            <p class="text-center">
+                Една или повече от стаите които запазихте, в момента бяха запазени от друг.
+                Съжаляваме за случилото се. Моля изберете други стаи.
+            </p>
+            <p class="text-center">Ще направим всичко възможно да си намерите стая която ве устройва.</p>
+        }
+
+    </div>
+
+    <div id="roomsNotSelected" style="display:none">
+        @if (Model.RoomList.Count == 1)
+        {
+            <p class="text-center">
+                Моля първо изберете номер на стая.
+            </p>
+        }
+        else
+        {
+            <p class="text-center">
+                Моля, изберете стаи в които искате да гостувате.
+            </p>
+        }
+
+    </div>
+}
+

@@ -1,0 +1,39 @@
+﻿@model Reservations.Models.Room
+@{
+    Layout = null;
+}
+
+<div class="container">
+    <h5>Информация относно стаята...</h5>
+    <div class="row">
+        <div class="col">
+            <label>Изберете етаж</label>
+
+            @Html.DropDownListFor(m=>m.RoomFloor, ViewBag.RoomFloor as SelectList, "Изберете етаж", new { @class = "form-control",
+                           @id = "roomLevelDropDownList", @onchange = "changePeriod()"})
+            @Html.ValidationMessageFor(m => m.RoomFloor, "", new { @class = "text-danger" })
+        </div>
+        <div class="col">
+            <label>Изберете номер на стая</label>
+            @Html.DropDownListFor(m=>m.RoomID, ViewBag.RoomID as SelectList, "Изберете стая", new { @class = "form-control",
+                           @id = "roomIdDropDownList", @onchange = "changePeriod()"})
+            @Html.ValidationMessageFor(m => m.RoomID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label>Изберете тип стая</label>
+            @Html.DropDownListFor(m=>m.RoomType, ViewBag.RoomType as SelectList, "Изберете тип стая", new { @class = "form-control",
+                           @id = "roomTypeDropDownList", @onchange = "changePeriod()"})
+            @Html.ValidationMessageFor(m => m.RoomType, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label>Изберете изглед стая</label>
+            @Html.DropDownListFor(m=>m.RoomView, ViewBag.RoomView as SelectList, "Изберете изглед на стая", new { @class = "form-control",
+                           @id = "roomViewDropDownList", @onchange = "changePeriod()"})
+            @Html.ValidationMessageFor(m => m.RoomView, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>

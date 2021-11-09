@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    @*  <meta http-equiv="X-UA-Compatible" content="IE=9, IE=10"/> Заради IE8
+        <meta http-equiv="X-UA-Compatible" content="IE=8"/>
+    *@
+    <title>Reservations</title>
+
+    <link href="@Url.Content("~/Content/Gridmvc.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/menu.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/app-default.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/myGridMVC.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/calendar.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/calendar-win2k-cold-1.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/jquery-ui.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/png" href="neg_favicon.png" />
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" />
+
+
+
+
+
+
+
+    @*  <script src="@Url.Content("~/Scripts/jquery-2.1.1.min.js")" type="text/javascript"> </script>
+        Заради IE8
+    *@
+    <script src="@Url.Content("~/Scripts/jquery-1.11.2.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-3.4.1.min.js")" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.11.2.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery-ui-1.12.1.min.js")" type="text/javascript"></script>
+
+    <script src="@Url.Content("~/Scripts/gridmvc.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/menu.js")"></script>
+    <script src="@Url.Content("~/Scripts/calendar.js")"></script>
+    <script src="@Url.Content("~/Scripts/calendar-en.js")"></script>
+    <script src="@Url.Content("~/Scripts/calendar-setup.js")"></script>
+
+    <script src="@Url.Content("~/Scripts/popper.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/popper.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/page.js")" type="text/javascript"></script>
+    @*
+
+        <script src="@Url.Content("~/Scripts/DialogForm.js")" type="text/javascript"></script>   *@
+
+    <script src="@Url.Content("~/Scripts/ckeditor/ckeditor.js")"></script>
+
+</head>
+<body>
+    @{
+        string roleBG = "Без достъп";
+
+        Reservations.Classes.Utils.UserInfo userInfo = ((Reservations.Classes.Utils.UserInfo)Session["UserInfo"]);
+
+        switch (userInfo.Role)
+        {
+            
+            case Reservations.Classes.Utils.UserRole.HELP_DESK:
+                roleBG = "HD | Хелп Деск"; break;
+            case Reservations.Classes.Utils.UserRole.REGULAR_USER:
+                roleBG = "USER | Потребител"; break;
+
+            case Reservations.Classes.Utils.UserRole.POWER_USER:
+                roleBG = "ADMIN | Администратор"; break;
+                
+        }
+
+    }
+
+    <ul id="navigation">
+        <li class="left">
+            <img src="@Url.Content("~/Content/ucb.logo.jpg")" />
+        </li>
+
+        <li class="middle">
+            Reservations
+        </li>
+
+        <li class="right">
+            <ul class="toolbar">
+                <li>@roleBG</li>
+                <li>@userInfo.accessManager.CommonName</li>
+            </ul>
+        </li>
+    </ul>
+
+
+    <br class="clearboth" />
+
+    @Html.Partial("GenerateMenu")
+
+    <br />
+    <div>
+        @RenderBody()
+    </div>
+</body>
+</html>
